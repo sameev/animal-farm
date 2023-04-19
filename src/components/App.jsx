@@ -1,12 +1,20 @@
-import { useState } from "react"
+import { useState } from "react";
+import Animal from "./Animal";
 
 function App() {
 
   const [animals, setAnimals] = useState([]);
 
+  const search = async(q) => {
+    const res = await fetch(`http://localhost:8080?${new URLSearchParams({q})}`);
+    const data = await res.json();
+    setAnimals(data);
+    if(q === '') setAnimals([]);
+  }
+
 
   const handleTyping = (e) => {
-    console.log(e.target.value)
+    search(e.target.value);
   }
 
   return (
@@ -20,9 +28,7 @@ function App() {
 
       <ul>
         {animals.map((animal) => (
-          <li key={animal.id}>
-            <strong>{animal.type}</strong> {animal.name} {animal.age}
-          </li>
+          <Animal key={animal.id} type={animal.type} name={animal.name} age={animal.age} />
         ))}
 
         {animals.length === 0 ? 'No Animals Found' : null}
